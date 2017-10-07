@@ -1,0 +1,1 @@
+./discryptord -t $(cat .token)
