@@ -16,8 +16,8 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/flaymingyawn/discryptord/history"
-	"github.com/flaymingyawn/discryptord/types"
+	"github.com/flamingyawn/discryptord/history"
+	"github.com/flamingyawn/discryptord/types"
 	"github.com/wcharczuk/go-chart"
 	"github.com/wcharczuk/go-chart/drawing"
 )
