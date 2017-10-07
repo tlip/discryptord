@@ -121,7 +121,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				Name: "SPY",
 				Style: chart.Style{
 					Show:        true,
-					StrokeColor: chart.GetDefaultColor(0),
+					StrokeColor: drawing.ColorFromHex("92FF92"),
 				},
 				XValues: xv,
 				YValues: yv,
@@ -131,7 +131,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				Name: "SPY - SMA",
 				Style: chart.Style{
 					Show:            true,
-					StrokeColor:     drawing.ColorRed,
+					StrokeColor:     drawing.ColorFromHex("AE73FF"),
 					StrokeDashArray: []float64{5.0, 5.0},
 				},
 				InnerSeries: priceSeries,
@@ -141,22 +141,30 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				Name: "SPY - Bol. Bands",
 				Style: chart.Style{
 					Show:        true,
-					StrokeColor: drawing.ColorFromHex("efefef"),
-					FillColor:   drawing.ColorFromHex("efefef").WithAlpha(64),
+					StrokeColor: drawing.ColorFromHex("bcbcbc").WithAlpha(50),
 				},
 				InnerSeries: priceSeries,
 			}
 
 			graph := chart.Chart{
+				Canvas: chart.Style{
+					FillColor: drawing.ColorFromHex("36393E"),
+				},
+				Background: chart.Style{
+					FillColor: drawing.ColorFromHex("36393E"),
+				},
 				XAxis: chart.XAxis{
-					Style:        chart.Style{Show: true},
+					Style: chart.Style{
+						StrokeColor: drawing.ColorFromHex("ffffff"),
+						Show:        false,
+					},
 					TickPosition: chart.TickPositionBetweenTicks,
 				},
 				YAxis: chart.YAxis{
-					Style: chart.Style{Show: true},
+					Style: chart.Style{Show: false},
 					Range: &chart.ContinuousRange{
-						Max: ymax * 1.001,
-						Min: ymin * 0.999,
+						Max: ymax * 1.005,
+						Min: ymin * 0.995,
 					},
 				},
 				Series: []chart.Series{

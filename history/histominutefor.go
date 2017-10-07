@@ -10,8 +10,8 @@ func HistoMinuteFor(ticker string) string {
 
 	fsym := "?fsym=" + strings.ToUpper(ticker)
 	tsym := "&tsym=USD"
-	limit := "&limit=60"
-	aggregate := "&aggregate=6"
+	limit := "&limit=180"
+	aggregate := "&aggregate=2"
 	query := fsym + tsym + limit + aggregate
 
 	return link + query
