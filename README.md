@@ -16,7 +16,7 @@ You can hire a bra (..maker?) by reciting:
 ```
 
 ## Install
-Althought the true method of invoking this minor `GO`d, our leading scientists think the magic cantation with the most promise goes like:
+Although the ancient method of invoking this minor god has long been forgotten, our leading scientists believe the magic cantation with the most promise goes something like:
 
 ```zsh
 % go get github.com/flaymingyawn/discryptord
