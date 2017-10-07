@@ -76,11 +76,18 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// Split the command to separate ticker from penis
 		splitCommand := strings.Split(m.Content, " ")
 
-		if len(splitCommand) == 2 {
+		if len(splitCommand) == 2 || len(splitCommand) == 3 {
 			var histoData types.HistoResponse
+			var coin string = splitCommand[1]
+			var base string
 
 			// build uri
-			resp, err := http.Get(history.HistoMinuteFor(splitCommand[1]))
+			if len(splitCommand) == 3 {
+				base = splitCommand[2]
+			} else {
+				base = "usd"
+			}
+			resp, err := http.Get(history.HistoMinuteFor(coin, base))
 			if err != nil {
 				fmt.Println(err)
 				return
