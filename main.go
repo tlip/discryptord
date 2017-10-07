@@ -199,7 +199,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 
 			// Send image
-			msg := "`" + strings.ToUpper(splitCommand[1]) + "/USD (Last 6h)`"
+			msg := "`" + strings.ToUpper(coin) + "/" + strings.ToUpper(base) + " (Last 6h)`"
 			s.ChannelFileSendWithMessage(m.ChannelID, msg, splitCommand[1]+"usd.png", finalImg)
 
 		}
