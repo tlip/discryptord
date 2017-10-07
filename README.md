@@ -27,12 +27,12 @@ No promises, doe.
 ## Getting Started
 First, create a bot friend on discord.
 Then invite it to the channel(s) you want it to stalk...
-Next, copy its UserId to your magic clipboard.
+Next, copy its **BOT_TOKEN** to your magic clipboard.
 
 Go into this package's home directory and whisper this into your terminal:
 
 ```zsh 
-  % echo "<User_Id>" >> .token
+  % echo "BOT_TOKEN" >> .token
 ```
 
 Finally, speak
