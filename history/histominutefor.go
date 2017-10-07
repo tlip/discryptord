@@ -10,8 +10,8 @@ func HistoMinuteFor(coin, base string) string {
 
 	fsym := "?fsym=" + strings.ToUpper(coin)
 	tsym := "&tsym=" + strings.ToUpper(base)
-	limit := "&limit=180"
-	aggregate := "&aggregate=2"
+	limit := "&limit=144"
+	aggregate := "&aggregate=10"
 	query := fsym + tsym + limit + aggregate
 
 	return link + query
