@@ -2,6 +2,8 @@ discryptord
 ===========
 A Discord bot that will amaze your friends by emitting a *6H* chart for any magic internet currency.
 
+![Examplg](img/graph.png)
+
 ## Usage
 ```
 ?price <TICKER>
