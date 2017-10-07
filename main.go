@@ -66,11 +66,11 @@ func main() {
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Make sure cryptograph isn't responding to any seedy bots or females
-	if len(m.Content) <= 6 {
+	if len(m.Content) <= 2 {
 		return
 	}
 	authorIsHuman := (m.Author.ID != s.State.User.ID)
-	hasAPenis := (m.Content[:6] == "?price")
+	hasAPenis := (m.Content[:2] == "# ")
 
 	if authorIsHuman && hasAPenis {
 		// Split the command to separate ticker from penis
@@ -78,8 +78,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		if len(splitCommand) == 2 || len(splitCommand) == 3 {
 			var histoData types.HistoResponse
-			var coin string = splitCommand[1]
 			var base string
+			coin := splitCommand[1]
 
 			// build uri
 			if len(splitCommand) == 3 {
