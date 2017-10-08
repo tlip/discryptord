@@ -150,7 +150,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				Name: "SPY - VOL",
 				Style: chart.Style{
 					Show:        true,
-					StrokeColor: drawing.ColorFromHex("00A1E7").WithAlpha(50),
+					StrokeColor: drawing.ColorFromHex("00A1E7").WithAlpha(70),
 				},
 				XValues: xv,
 				YValues: vol,
