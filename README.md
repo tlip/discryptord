@@ -6,15 +6,16 @@ A Discord bot that will amaze your friends by emitting a *24H* chart for any mag
 
 ## Usage
 ```
-?price <TICKER>
+# <TICKER> [, <BASE>]
 ```
+If `<BASE>` is left blank, it defaults to `USD`
 
 ## Install
 The ancient method of invoking this minor god has long been forgotten...
 So if you want to invite our evil friend into your realm, our leading scientists believe the magic cantation with the most promise goes something like:
 
 ```zsh
-% go get github.com/flaymingyawn/discryptord
+% go get github.com/flamingyawn/discryptord
 ```
 
 It's simple to summon our bot onces its dwelling in your proximity.
