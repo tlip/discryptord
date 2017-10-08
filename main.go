@@ -110,28 +110,50 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			////
 			var xv []time.Time
-			var yv []float64
-			var ymin, ymax float64 = 1000000, 0
+			var yv, vol []float64
+			var ymin, ymax, volmin, volmax float64 = 1000000, 0, 1000000000, 0
 
 			for _, m := range histoData.Data {
 				xv = append(xv, time.Unix(m.Time, 0))
 				yv = append(yv, m.Close)
+				vol = append(vol, m.Volumeto)
+
 				if m.Close < ymin {
 					ymin = m.Close
 				}
 				if m.Close > ymax {
 					ymax = m.Close
 				}
+				if m.Volumeto < volmin {
+					volmin = m.Volumeto
+				}
+				if m.Volumeto > volmax {
+					volmax = m.Volumeto
+				}
+			}
+
+			for i, v := range vol {
+				vol[i] = ((v-volmin)/(volmax-volmin))*(ymax-ymin) + ymin
 			}
 
 			priceSeries := chart.TimeSeries{
 				Name: "SPY",
 				Style: chart.Style{
 					Show:        true,
-					StrokeColor: drawing.ColorFromHex("92FF92"),
+					StrokeColor: drawing.ColorFromHex("4DE786"),
 				},
 				XValues: xv,
 				YValues: yv,
+			}
+
+			volumeSeries := chart.TimeSeries{
+				Name: "SPY - VOL",
+				Style: chart.Style{
+					Show:        true,
+					StrokeColor: drawing.ColorFromHex("00A1E7").WithAlpha(50),
+				},
+				XValues: xv,
+				YValues: vol,
 			}
 
 			smaSeries := chart.SMASeries{
@@ -144,14 +166,15 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				InnerSeries: priceSeries,
 			}
 
-			bbSeries := &chart.BollingerBandsSeries{
-				Name: "SPY - Bol. Bands",
-				Style: chart.Style{
-					Show:        true,
-					StrokeColor: drawing.ColorFromHex("bcbcbc").WithAlpha(50),
-				},
-				InnerSeries: priceSeries,
-			}
+			// bbSeries := &chart.BollingerBandsSeries{
+			// 	Name: "SPY - Bol. Bands",
+			// 	Style: chart.Style{
+			// 		Show:        true,
+			// 		StrokeColor: drawing.ColorFromHex("ffffff").WithAlpha(30),
+			// 		FillColor:   drawing.ColorFromHex("ffffff").WithAlpha(1),
+			// 	},
+			// 	InnerSeries: priceSeries,
+			// }
 
 			graph := chart.Chart{
 				Canvas: chart.Style{
@@ -175,7 +198,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					},
 				},
 				Series: []chart.Series{
-					bbSeries,
+					volumeSeries,
+					// bbSeries,
 					priceSeries,
 					smaSeries,
 				},
