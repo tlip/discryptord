@@ -13,7 +13,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-	figure "github.com/common-nighthawk/go-figure"
+	"github.com/common-nighthawk/go-figure"
 	"github.com/flamingyawn/discryptord/drawer"
 	"github.com/flamingyawn/discryptord/history"
 	"github.com/flamingyawn/discryptord/types"
