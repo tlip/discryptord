@@ -78,13 +78,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			var histoData types.HistoResponse
 			var base string
 
-			coin := splitCommand[0][1:]
+			coin := strings.ToUpper(splitCommand[0][1:])
 
 			// build uri
 			if len(splitCommand) == 2 {
-				base = splitCommand[1]
+				base = strings.ToUpper(splitCommand[1])
 			} else {
-				base = "usd"
+				base = "USD"
 			}
 
 			// // //
@@ -203,8 +203,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			//	//	//
 			//	//	//
 
-			pairing := strings.ToUpper(coin) + "/" + strings.ToUpper(base)
-			msg := "`" + pairing + " (Last 24h) :: " + sym + fmt.Sprintf("%f`", lastPrice)
+			pairing := fmt.Sprintf("%s/%s", coin, base)
+			msg := fmt.Sprintf("`%s :: %s%f                            24h`", pairing, sym, lastPrice)
 
 			//	//	//
 			//	//	//
