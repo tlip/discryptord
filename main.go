@@ -5,17 +5,15 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"image"
-	"image/png"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/flamingyawn/discryptord/drawer"
 	"github.com/flamingyawn/discryptord/history"
 	"github.com/flamingyawn/discryptord/types"
 	"github.com/wcharczuk/go-chart"
@@ -79,6 +77,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if len(splitCommand) == 1 || len(splitCommand) == 2 {
 			var histoData types.HistoResponse
 			var base string
+
 			coin := splitCommand[0][1:]
 
 			// build uri
@@ -87,6 +86,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			} else {
 				base = "usd"
 			}
+
+			// // //
+			// // //
+
 			resp, err := http.Get(history.HistoMinuteFor(coin, base))
 			if err != nil {
 				fmt.Println(err)
@@ -94,47 +97,24 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			defer resp.Body.Close()
 
-			//
-			body, err := ioutil.ReadAll(resp.Body)
+			histoMinuteBody, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
 
-			//
-			err = json.Unmarshal(body, &histoData)
+			err = json.Unmarshal(histoMinuteBody, &histoData)
+			fmt.Println(err)
 			if err != nil {
 				fmt.Println(err)
+
 				return
 			}
 
-			////
-			var xv []time.Time
-			var yv, vol []float64
-			var ymin, ymax, volmin, volmax float64 = 1000000, 0, 1000000000, 0
+			// // //
+			// // //
 
-			for _, m := range histoData.Data {
-				xv = append(xv, time.Unix(m.Time, 0))
-				yv = append(yv, m.Close)
-				vol = append(vol, m.Volumeto)
-
-				if m.Close < ymin {
-					ymin = m.Close
-				}
-				if m.Close > ymax {
-					ymax = m.Close
-				}
-				if m.Volumeto < volmin {
-					volmin = m.Volumeto
-				}
-				if m.Volumeto > volmax {
-					volmax = m.Volumeto
-				}
-			}
-
-			for i, v := range vol {
-				vol[i] = ((v-volmin)/(volmax-volmin))*(ymax-ymin) + ymin
-			}
+			axes := drawer.FetchAxes(histoData.Data)
 
 			priceSeries := chart.TimeSeries{
 				Name: "SPY",
@@ -142,8 +122,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					Show:        true,
 					StrokeColor: drawing.ColorFromHex("4DE786"),
 				},
-				XValues: xv,
-				YValues: yv,
+				XValues: axes.X,
+				YValues: axes.Y,
 			}
 
 			volumeSeries := chart.TimeSeries{
@@ -152,8 +132,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					Show:        true,
 					StrokeColor: drawing.ColorFromHex("00A1E7").WithAlpha(70),
 				},
-				XValues: xv,
-				YValues: vol,
+				XValues: axes.X,
+				YValues: axes.Vol,
 			}
 
 			smaSeries := chart.SMASeries{
@@ -165,16 +145,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				},
 				InnerSeries: priceSeries,
 			}
-
-			// bbSeries := &chart.BollingerBandsSeries{
-			// 	Name: "SPY - Bol. Bands",
-			// 	Style: chart.Style{
-			// 		Show:        true,
-			// 		StrokeColor: drawing.ColorFromHex("ffffff").WithAlpha(30),
-			// 		FillColor:   drawing.ColorFromHex("ffffff").WithAlpha(1),
-			// 	},
-			// 	InnerSeries: priceSeries,
-			// }
 
 			graph := chart.Chart{
 				Canvas: chart.Style{
@@ -193,8 +163,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				YAxis: chart.YAxis{
 					Style: chart.Style{Show: false},
 					Range: &chart.ContinuousRange{
-						Max: ymax * 1.005,
-						Min: ymin * 0.995,
+						Max: axes.Ymax * 1.005,
+						Min: axes.Ymin * 0.995,
 					},
 				},
 				Series: []chart.Series{
@@ -204,23 +174,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					smaSeries,
 				},
 			}
+
 			buffer := bytes.NewBuffer([]byte{})
 
 			// render and save chart
 			err = graph.Render(chart.PNG, buffer)
-			img, _, _ := image.Decode(bytes.NewReader(buffer.Bytes()))
-			out, err3 := os.Create("./img/graph.png")
-			if err3 != nil {
-				fmt.Println(err3)
-			}
-			err = png.Encode(out, img)
 
-			// Read image
-			finalImg, err4 := os.Open("./img/graph.png")
-			defer finalImg.Close()
-			if err4 != nil {
-				fmt.Println(err4)
-			}
+			// // //
+			// // //
 
 			sym := ""
 
@@ -232,13 +193,24 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				sym = "Ξ"
 			}
 
-			price := yv[len(yv)-1]
+			var lastPrice float64
+			if len(axes.Y) > 0 {
+				lastPrice = axes.Y[len(axes.Y)-1]
+			} else {
+				lastPrice = 0
+			}
+
+			//	//	//
+			//	//	//
+
 			pairing := strings.ToUpper(coin) + "/" + strings.ToUpper(base)
-			msg := "`" + pairing + " (Last 24h) :: " + sym + fmt.Sprintf("%f`", price)
+			msg := "`" + pairing + " (Last 24h) :: " + sym + fmt.Sprintf("%f`", lastPrice)
+
+			//	//	//
+			//	//	//
 
 			// Send image
-			s.ChannelFileSendWithMessage(m.ChannelID, msg, coin+base+".png", finalImg)
-
+			s.ChannelFileSendWithMessage(m.ChannelID, msg, coin+base+".png", bytes.NewReader(buffer.Bytes()))
 		}
 	}
 }
