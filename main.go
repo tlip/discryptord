@@ -104,10 +104,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 
 			err = json.Unmarshal(histoMinuteBody, &histoData)
-			fmt.Println(err)
 			if err != nil {
 				fmt.Println(err)
-
 				return
 			}
 
@@ -193,11 +191,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				sym = "Ξ"
 			}
 
-			var lastPrice float64
+			lastPrice := 0.0
 			if len(axes.Y) > 0 {
 				lastPrice = axes.Y[len(axes.Y)-1]
-			} else {
-				lastPrice = 0
 			}
 
 			//	//	//

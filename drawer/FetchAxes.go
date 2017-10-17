@@ -11,10 +11,10 @@ import (
 func FetchAxes(data []types.HistoMinute) types.AxesMap {
 	var wg sync.WaitGroup
 	// var ymin, ymax, volmin, volmax float64
-	var axes types.AxesMap
 
 	ymin, ymax := 1000000000.0, 0.0
 	volmin, volmax := 1000000000.0, 0.0
+
 	xq := make([]time.Time, len(data))
 	yq := make([]float64, len(data))
 	volq := make([]float64, len(data))
@@ -48,7 +48,7 @@ func FetchAxes(data []types.HistoMinute) types.AxesMap {
 
 	}
 
-	axes = types.AxesMap{
+	return types.AxesMap{
 		X:      xq,
 		Y:      yq,
 		Vol:    volq,
@@ -57,19 +57,4 @@ func FetchAxes(data []types.HistoMinute) types.AxesMap {
 		Volmin: volmin,
 		Volmax: volmax,
 	}
-	// fmt.Println(axes.Volmin)
-	// fmt.Println(axes.Volmax)
-	for i, v := range axes.Vol {
-		wg.Add(1)
-		go func(i int, v float64) {
-			defer wg.Done()
-			volRange := (axes.Volmax - axes.Volmin)
-			yRange := (axes.Ymax - axes.Ymin)
-			axes.Vol[i] = (((v - axes.Volmin) / volRange) * yRange) + axes.Ymin
-		}(i, v)
-	}
-
-	finalAxes := axes
-
-	return finalAxes
 }
