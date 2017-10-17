@@ -1,20 +1,23 @@
-discryptord
+discryptord v0.2.1
 ===========
+
 A Discord bot that will amaze your friends by emitting a *24H* chart for any magic internet currency.
 
 ![Examplg](img/graph.png)
 
 ## Usage
-```
-?price <TICKER>
+
+```run
+# <TICKER> [?<BASE>]
 ```
 
 ## Install
+
 The ancient method of invoking this minor god has long been forgotten...
 So if you want to invite our evil friend into your realm, our leading scientists believe the magic cantation with the most promise goes something like:
 
 ```zsh
-% go get github.com/flaymingyawn/discryptord
+% go get github.com/flamingyawn/discryptord
 ```
 
 It's simple to summon our bot onces its dwelling in your proximity.
@@ -28,14 +31,15 @@ Just recite the following on a night with a new moon during the eve of planets' 
 No promises, doe.
 
 ## Getting Started
+
 First, create a bot friend on discord.
 Then invite it to the channel(s) you want it to stalk...
 Next, copy its **BOT_TOKEN** to your magic clipboard.
 
 Go into this package's home directory and whisper this into your terminal:
 
-```zsh 
-% echo "BOT_TOKEN" >> .token
+```zsh
+% echo "<BOT_TOKEN>" >> .token
 ```
 
 Finally, speak
@@ -47,4 +51,5 @@ Finally, speak
 to start the _real_ fun.
 
 ## License
+
 This project is under MIT License. See the [LICENSE](LICENSE) file for full license text.
