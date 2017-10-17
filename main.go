@@ -70,20 +70,20 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	authorIsHuman := (m.Author.ID != s.State.User.ID)
-	hasAPenis := (m.Content[:2] == "# ")
+	hasAPenis := strings.HasPrefix(m.Content, "!")
 
 	if authorIsHuman && hasAPenis {
 		// Split the command to separate ticker from penis
 		splitCommand := strings.Split(m.Content, " ")
 
-		if len(splitCommand) == 2 || len(splitCommand) == 3 {
+		if len(splitCommand) == 1 || len(splitCommand) == 2 {
 			var histoData types.HistoResponse
 			var base string
-			coin := splitCommand[1]
+			coin := splitCommand[0][1:]
 
 			// build uri
-			if len(splitCommand) == 3 {
-				base = splitCommand[2]
+			if len(splitCommand) == 2 {
+				base = splitCommand[1]
 			} else {
 				base = "usd"
 			}
@@ -237,7 +237,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			msg := "`" + pairing + " (Last 24h) :: " + sym + fmt.Sprintf("%f`", price)
 
 			// Send image
-			s.ChannelFileSendWithMessage(m.ChannelID, msg, splitCommand[1]+"usd.png", finalImg)
+			s.ChannelFileSendWithMessage(m.ChannelID, msg, coin+base+".png", finalImg)
 
 		}
 	}
