@@ -187,11 +187,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			sym := ""
 
-			if base == "usd" {
+			if base == "USD" {
 				sym = "$"
-			} else if base == "btc" {
+			} else if base == "BTC" {
 				sym = "Ƀ"
-			} else if base == "eth" {
+			} else if base == "ETH" {
 				sym = "Ξ"
 			}
 
