@@ -204,7 +204,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			//	//	//
 
 			pairing := fmt.Sprintf("%s/%s", coin, base)
-			msg := fmt.Sprintf("`%s :: %s%f`                                 24h", pairing, sym, lastPrice)
+			msg := fmt.Sprintf("`%s :: %s%f                            24h`", pairing, sym, lastPrice)
 
 			//	//	//
 			//	//	//
