@@ -10,7 +10,6 @@ import (
 // FetchAxes :: Fetch axes data
 func FetchAxes(data []types.HistoMinute) types.AxesMap {
 	var wg sync.WaitGroup
-	// var ymin, ymax, volmin, volmax float64
 
 	ymin, ymax := 1000000000.0, 0.0
 	volmin, volmax := 1000000000.0, 0.0
@@ -46,6 +45,12 @@ func FetchAxes(data []types.HistoMinute) types.AxesMap {
 			volq[i] = vol
 		}(i, minute)
 
+	}
+
+	for i, v := range volq {
+		volRange := (volmax - volmin)
+		yRange := (ymax - ymin)
+		volq[i] = (((v - volmin) / volRange) * yRange) + ymin
 	}
 
 	return types.AxesMap{
