@@ -8,8 +8,10 @@ A Discord bot that will amaze your friends by emitting a *24H* chart for any mag
 ## Usage
 
 ```run
-# <TICKER> [?<BASE>]
+!<TICKER> [?<BASE>]
 ```
+
+If `<BASE>` is left empty, then it defaults to `"usd"`.
 
 ## Install
 
