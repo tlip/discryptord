@@ -178,6 +178,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			// render and save chart
 			err = graph.Render(chart.PNG, buffer)
 
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 			// // //
 			// // //
 
