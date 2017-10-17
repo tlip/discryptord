@@ -222,8 +222,21 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				fmt.Println(err4)
 			}
 
+			sym := ""
+
+			if base == "usd" {
+				sym = "$"
+			} else if base == "btc" {
+				sym = "Ƀ"
+			} else if base == "eth" {
+				sym = "Ξ"
+			}
+
+			price := yv[len(yv)-1]
+			pairing := strings.ToUpper(coin) + "/" + strings.ToUpper(base)
+			msg := "`" + pairing + " (Last 24h) :: " + sym + fmt.Sprintf("%f`", price)
+
 			// Send image
-			msg := "`" + strings.ToUpper(coin) + "/" + strings.ToUpper(base) + " (Last 24h)`"
 			s.ChannelFileSendWithMessage(m.ChannelID, msg, splitCommand[1]+"usd.png", finalImg)
 
 		}
