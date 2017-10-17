@@ -13,7 +13,6 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/common-nighthawk/go-figure"
 	"github.com/flamingyawn/discryptord/drawer"
 	"github.com/flamingyawn/discryptord/history"
 	"github.com/flamingyawn/discryptord/types"
@@ -77,7 +76,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		if len(splitCommand) == 1 || len(splitCommand) == 2 {
 			var histoData types.HistoResponse
-			// var priceMultiData types.PriceMultiFull
 			var base string
 
 			coin := splitCommand[0][1:]
@@ -92,30 +90,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			// // //
 			// // //
 
-			// resp, err := http.Get(volume.VolumeFor(coin, base))
-			// if err != nil {
-			// 	fmt.Println(err)
-			// 	return
-			// }
-			// defer resp.Body.Close()
-
-			// //
-			// body, err := ioutil.ReadAll(resp.Body)
-			// if err != nil {
-			// 	fmt.Println(err)
-			// 	return
-			// }
-
-			// //
-			// err = json.Unmarshal(body, &priceMultiData)
-			// if err != nil {
-			// 	fmt.Println(err)
-			// 	return
-			// }
-
-			// // //
-			// // //
-
 			resp, err := http.Get(history.HistoMinuteFor(coin, base))
 			if err != nil {
 				fmt.Println(err)
@@ -123,17 +97,17 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			defer resp.Body.Close()
 
-			//
 			histoMinuteBody, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
 
-			//
 			err = json.Unmarshal(histoMinuteBody, &histoData)
+			fmt.Println(err)
 			if err != nil {
 				fmt.Println(err)
+
 				return
 			}
 
@@ -141,15 +115,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			// // //
 
 			axes := drawer.FetchAxes(histoData.Data)
-
-			// for i, v := range axes.Vol {
-			// 	// go func(i int, v float64) {
-			// 	// defer wg.Done()
-			// 	volRange := (axes.Volmax - axes.Volmin)
-			// 	yRange := (axes.Ymax - axes.Ymin)
-			// 	axes.Vol[i] = (((v - axes.Volmin) / volRange) * yRange) + axes.Ymin
-			// 	// }(i, v)
-			// }
 
 			priceSeries := chart.TimeSeries{
 				Name: "SPY",
@@ -181,16 +146,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				InnerSeries: priceSeries,
 			}
 
-			// bbSeries := &chart.BollingerBandsSeries{
-			// 	Name: "SPY - Bol. Bands",
-			// 	Style: chart.Style{
-			// 		Show:        true,
-			// 		StrokeColor: drawing.ColorFromHex("ffffff").WithAlpha(30),
-			// 		FillColor:   drawing.ColorFromHex("ffffff").WithAlpha(1),
-			// 	},
-			// 	InnerSeries: priceSeries,
-			// }
-
 			graph := chart.Chart{
 				Canvas: chart.Style{
 					FillColor: drawing.ColorFromHex("36393E"),
@@ -219,25 +174,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					smaSeries,
 				},
 			}
+
 			buffer := bytes.NewBuffer([]byte{})
 
 			// render and save chart
 			err = graph.Render(chart.PNG, buffer)
 
-			// img, _, _ := image.Decode(bytes.NewReader(buffer.Bytes()))
-			// out, err3 := os.Create("./img/graph.png")
-			// var out io.Writer
-			// if err3 != nil {
-			// 	fmt.Println(err3)
-			// }
-			// err = png.Encode(out, img)
-
-			// Read image
-			// finalImg, err4 := os.Open("./img/graph.png")
-			// defer finalImg.Close()
-			// if err4 != nil {
-			// 	fmt.Println(err4)
-			// }
+			// // //
+			// // //
 
 			sym := ""
 
@@ -249,47 +193,24 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				sym = "Ξ"
 			}
 
-			price := yv[len(yv)-1]
+			var lastPrice float64
+			if len(axes.Y) > 0 {
+				lastPrice = axes.Y[len(axes.Y)-1]
+			} else {
+				lastPrice = 0
+			}
+
+			//	//	//
+			//	//	//
+
 			pairing := strings.ToUpper(coin) + "/" + strings.ToUpper(base)
-			msg := "`" + pairing + " (Last 24h) :: " + sym + fmt.Sprintf("%f`", price)
+			msg := "`" + pairing + " (Last 24h) :: " + sym + fmt.Sprintf("%f`", lastPrice)
+
+			//	//	//
+			//	//	//
 
 			// Send image
-<<<<<<< HEAD
-			s.ChannelFileSendWithMessage(m.ChannelID, msg, coin+base+".png", finalImg)
-=======
-			// var sym string
-			var price string
-
-			// if base == "usd" {
-			// 	sym = "$"
-			// } else if base == "btc" {
-			// 	sym = "Ƀ"
-			// } else if base == "eth" {
-			// 	sym = "Ξ"
-			// } else {
-			// 	sym = ""
-			// }
-
-			ticker := fmt.Sprintf("%s/%s (24h)", strings.ToUpper(coin), strings.ToUpper(base))
-			// pRange := fmt.Sprintf("%s%f - %s%f", sym, axes.Ymin, sym, axes.Ymax)
-			// head := ticker + fmt.Sprintf("(24h :: %s)\n", pRange)
-			closePrice := fmt.Sprintf("%f", axes.Y[len(axes.Y)-1])
-
-			if len(closePrice) > 6 {
-				closePrice = closePrice[:6]
-			}
-
-			asciiPrice := figure.NewFigure(closePrice, "banner3", true).Slicify()
-
-			for _, row := range asciiPrice {
-				price = price + row + "\n"
-			}
-
-			fmt.Println(price)
-			msg := "```go\n" + ticker + "\n\n" + price + "```"
-
-			s.ChannelFileSendWithMessage(m.ChannelID, msg, splitCommand[1]+base+".png", bytes.NewReader(buffer.Bytes()))
->>>>>>> 13bd57b3739e8dfcf799c54e9891d473770ccb0c
+			s.ChannelFileSendWithMessage(m.ChannelID, msg, coin+base+".png", bytes.NewReader(buffer.Bytes()))
 
 		}
 	}
