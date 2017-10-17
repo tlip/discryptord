@@ -9,7 +9,7 @@ import (
 
 // FetchAxes :: Fetch axes data
 func FetchAxes(data []types.HistoMinute) types.AxesMap {
-	var wg, wg2 sync.WaitGroup
+	var wg sync.WaitGroup
 
 	axes := types.AxesMap{
 		X:      make([]time.Time, len(data)),
@@ -47,9 +47,9 @@ func FetchAxes(data []types.HistoMinute) types.AxesMap {
 	}
 
 	for i, v := range axes.Vol {
-		wg2.Add(1)
+		wg.Add(1)
 		go func(i int, v float64) {
-			defer wg2.Done()
+			defer wg.Done()
 			volRange := (axes.Volmax - axes.Volmin)
 			yRange := (axes.Ymax - axes.Ymin)
 			axes.Vol[i] = (((v - axes.Volmin) / volRange) * yRange) + axes.Ymin
