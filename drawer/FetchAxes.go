@@ -9,57 +9,52 @@ import (
 
 // FetchAxes :: Fetch axes data
 func FetchAxes(data []types.HistoMinute) types.AxesMap {
-	var wg sync.WaitGroup
+	var wg, wg2 sync.WaitGroup
 
-	ymin, ymax := 1000000000.0, 0.0
-	volmin, volmax := 1000000000.0, 0.0
-
-	xq := make([]time.Time, len(data))
-	yq := make([]float64, len(data))
-	volq := make([]float64, len(data))
+	axes := types.AxesMap{
+		X:      make([]time.Time, len(data)),
+		Y:      make([]float64, len(data)),
+		Vol:    make([]float64, len(data)),
+		Ymin:   10000000000.0,
+		Ymax:   0.0,
+		Volmin: 10000000000.0,
+		Volmax: 0.0,
+	}
 
 	for i, minute := range data {
 		wg.Add(1)
 		go func(i int, minute types.HistoMinute) {
 			defer wg.Done()
 
-			x := time.Unix(minute.Time, 0)
-			y := minute.Close
-			vol := minute.Volumeto
+			axes.X[i] = time.Unix(minute.Time, 0)
+			axes.Y[i] = minute.Close
+			axes.Vol[i] = minute.Volumeto
 
-			if y < ymin {
-				ymin = y
-			}
-			if y > ymax {
-				ymax = y
-			}
-			if vol < volmin && vol > 0 {
-				volmin = vol
-			}
-			if vol > volmax {
-				volmax = vol
+			if axes.Y[i] < axes.Ymin {
+				axes.Ymin = axes.Y[i]
+			} else if axes.Y[i] > axes.Ymax {
+				axes.Ymax = axes.Y[i]
 			}
 
-			xq[i] = x
-			yq[i] = y
-			volq[i] = vol
+			if axes.Vol[i] < axes.Volmin {
+				axes.Volmin = axes.Vol[i]
+			} else if axes.Vol[i] > axes.Volmax {
+				axes.Volmax = axes.Vol[i]
+			}
+
 		}(i, minute)
 
 	}
 
-	for i, v := range volq {
-		volRange := (volmax - volmin)
-		yRange := (ymax - ymin)
-		volq[i] = (((v - volmin) / volRange) * yRange) + ymin
+	for i, v := range axes.Vol {
+		wg2.Add(1)
+		go func(i int, v float64) {
+			defer wg2.Done()
+			volRange := (axes.Volmax - axes.Volmin)
+			yRange := (axes.Ymax - axes.Ymin)
+			axes.Vol[i] = (((v - axes.Volmin) / volRange) * yRange) + axes.Ymin
+		}(i, v)
 	}
 
-	return types.AxesMap{
-		X:      xq,
-		Y:      yq,
-		Vol:    volq,
-		Ymin:   ymin,
-		Ymax:   ymax,
-		Volmin: volmin,
-		Volmax: volmax,
-	}
+	return axes
 }
