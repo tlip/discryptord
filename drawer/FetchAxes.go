@@ -21,8 +21,8 @@ func FetchAxes(data []types.HistoMinute) types.AxesMap {
 		Volmax: 0.0,
 	}
 
+	wg.Add(len(data))
 	for i, minute := range data {
-		wg.Add(1)
 		go func(i int, minute types.HistoMinute) {
 			defer wg.Done()
 
@@ -43,11 +43,11 @@ func FetchAxes(data []types.HistoMinute) types.AxesMap {
 			}
 
 		}(i, minute)
-
 	}
+	wg.Wait()
 
+	wg2.Add(len(axes.Vol))
 	for i, v := range axes.Vol {
-		wg2.Add(1)
 		go func(i int, v float64) {
 			defer wg2.Done()
 			volRange := (axes.Volmax - axes.Volmin)
@@ -55,6 +55,7 @@ func FetchAxes(data []types.HistoMinute) types.AxesMap {
 			axes.Vol[i] = (((v - axes.Volmin) / volRange) * yRange) + axes.Ymin
 		}(i, v)
 	}
+	wg2.Wait()
 
 	return axes
 }
