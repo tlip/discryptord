@@ -4,11 +4,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flamingyawn/discryptord/types"
+	"lib/types"
 )
 
-// FetchAxes :: Fetch axes data
-func FetchAxes(data []types.HistoMinute) types.AxesMap {
+// ParsePriceData :: Parse Price Data
+func ParsePriceData(data []types.HistoTicker) types.AxesMap {
 	var wg, wg2 sync.WaitGroup
 
 	axes := types.AxesMap{
@@ -23,7 +23,7 @@ func FetchAxes(data []types.HistoMinute) types.AxesMap {
 
 	wg.Add(len(data))
 	for i, minute := range data {
-		go func(i int, minute types.HistoMinute) {
+		go func(i int, minute types.HistoTicker) {
 			defer wg.Done()
 
 			axes.X[i] = time.Unix(minute.Time, 0)

@@ -8,10 +8,11 @@ import (
 	"net/http"
 	"strings"
 
+	"lib/api"
+	"lib/drawer"
+	"lib/types"
+
 	"github.com/bwmarrin/discordgo"
-	"github.com/flamingyawn/discryptord/drawer"
-	"github.com/flamingyawn/discryptord/history"
-	"github.com/flamingyawn/discryptord/types"
 )
 
 // Create :: called once for every message on any channel that the autenticated bot has access to.
@@ -30,6 +31,11 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// separate ticker from invocation
 		// // //
 		splitCommand := strings.Split(m.Content, " ")
+		candle := "minute"
+		if len(splitCommand) > 1 && splitCommand[len(splitCommand)-1] == "-h" {
+			candle = "hour"
+			splitCommand = splitCommand[:len(splitCommand)-1]
+		}
 
 		// prevent overflow
 		// // //
@@ -47,7 +53,16 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			// fetch data
 			// // //
 			var histoData types.HistoResponse
-			resp, err := http.Get(history.HistoMinuteFor(coin, base))
+			var apiURL, timerange string
+			if candle == "hour" {
+				apiURL = api.BuildHistoHourURL(coin, base)
+				timerange = "7d"
+			} else if candle == "minute" {
+				apiURL = api.BuildHistoMinuteURL(coin, base)
+				timerange = "24h"
+			}
+
+			resp, err := http.Get(apiURL)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -68,7 +83,7 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			// format axes
 			// // //
-			axes := drawer.FetchAxes(histoData.Data)
+			axes := drawer.ParsePriceData(histoData.Data)
 
 			// draw chart
 			// // //
@@ -103,7 +118,7 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			//	build message
 			//	//
 			pairing := fmt.Sprintf("%s/%s", coin, base)
-			msg := fmt.Sprintf("`%s :: %s%f                            24h`", pairing, sym, lastPrice)
+			msg := fmt.Sprintf("`%s :: %s%f                            %s`", pairing, sym, lastPrice, timerange)
 
 			// send response
 			//	//

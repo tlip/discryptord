@@ -1,8 +1,9 @@
-package history
+package api
 
 import "strings"
 
-func HistoMinuteFor(coin, base string) string {
+// BuildHistoMinuteURL :: Construct URL for API call
+func BuildHistoMinuteURL(coin, base string) string {
 	scheme := "https://"
 	host := "min-api.cryptocompare.com"
 	path := "/data/histominute"
