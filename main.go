@@ -7,8 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
+	"lib/message"
+
 	"github.com/bwmarrin/discordgo"
-	"github.com/flamingyawn/discryptord/message"
 )
 
 // Variables used for command line parameters
@@ -22,7 +23,6 @@ func init() {
 }
 
 func main() {
-
 	// Create a new Discord session using the provided bot token.
 	dg, err := discordgo.New("Bot " + Token)
 	if err != nil {

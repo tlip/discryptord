@@ -1,7 +1,7 @@
 package types
 
-// HistoMinute :: Individual record from HistoResponse
-type HistoMinute struct {
+// HistoTicker :: Individual record from HistoResponse
+type HistoTicker struct {
 	Time       int64
 	Close      float64
 	Low        float64

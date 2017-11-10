@@ -1,5 +1,14 @@
-.bra.toml
+# discord bot token
 .token
+
+# bra automation scripts
+.bra.toml
+
+# bin
 discryptord
+
+# nohup logging
 nohup.out
+
+# misc
 /**/.DS_Store

@@ -1,4 +1,4 @@
-discryptord v0.2.5
+discryptord v0.2.6
 ===========
 
 A Discord bot that will amaze your friends by emitting a *24H* chart for any magic internet currency.
@@ -52,6 +52,13 @@ Finally, speak
 
 to start the _real_ fun.
 
+## halp donate plz
+
+Of course, I made this little guy with :heart: and offer him completely for free!
+But if you find him useful and want to help keep me developing, then I love you long time.
+ETH: `0x0f8c31fa23b21f23565db1e0938ebf41dd2ec5cd`
+
 ## License
 
 This project is under MIT License. See the [LICENSE](LICENSE) file for full license text.
+

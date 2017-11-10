@@ -1,10 +1,10 @@
 package types
 
-// HistoResponse :: Response Object from CryptoCompare HistoMinute API
+// HistoResponse :: Response Object from CryptoCompare HistoTicker API
 type HistoResponse struct {
 	Response          string
 	Aggregated        bool
-	Data              []HistoMinute
+	Data              []HistoTicker
 	TimeTo            int64
 	TimeFrom          int64
 	FirstValueInArray bool
