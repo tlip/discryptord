@@ -1,9 +1,9 @@
-discryptord v0.2.4
+discryptord v0.2.5
 ===========
 
 A Discord bot that will amaze your friends by emitting a *24H* chart for any magic internet currency.
 
-![Examplg](img/graph.png)
+![Example](assets/graph.png)
 
 ## Usage
 
