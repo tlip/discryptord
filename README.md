@@ -8,10 +8,23 @@ A Discord bot that will amaze your friends by emitting a *24H* chart for any mag
 ## Usage
 
 ```run
-!<TICKER> [?<BASE>]
+!<TICKER> [?<BASE>] [?-(w|m)]
 ```
 
-If `<BASE>` is left empty, then it defaults to `"usd"`.
+Examples:
+```run
+# ETH/BTC ()
+!eth btc -w  # 7d/1w in 1h ticks
+
+!eth btc -m  # 30d/1m in 6h ticks
+
+# ETH/USD
+!eth         # 24h/1d in 10m ticks 
+```
+
+As you can see, if `<BASE>` is ommited, then it defaults to `"usd"`.
+The `-w` changes the output range from 24h/1d to 7d/1w. 
+The `-m` changes the output range from 24h/1d to 30d/1m. 
 
 ## Install
 

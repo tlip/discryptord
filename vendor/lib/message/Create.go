@@ -32,8 +32,15 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// // //
 		splitCommand := strings.Split(m.Content, " ")
 		candle := "minute"
-		if len(splitCommand) > 1 && splitCommand[len(splitCommand)-1] == "-h" {
-			candle = "hour"
+		if len(splitCommand) > 1 {
+			flag := splitCommand[len(splitCommand)-1]
+
+			if flag == "-w" {
+				candle = "hour"
+			} else if flag == "-m" {
+				candle = "day"
+			}
+
 			splitCommand = splitCommand[:len(splitCommand)-1]
 		}
 
@@ -56,10 +63,13 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			var apiURL, timerange string
 			if candle == "hour" {
 				apiURL = api.BuildHistoHourURL(coin, base)
-				timerange = "7d"
+				timerange = "7D"
 			} else if candle == "minute" {
 				apiURL = api.BuildHistoMinuteURL(coin, base)
-				timerange = "24h"
+				timerange = "24H"
+			} else if candle == "day" {
+				apiURL = api.BuildHistoDayURL(coin, base)
+				timerange = "1M"
 			}
 
 			resp, err := http.Get(apiURL)
