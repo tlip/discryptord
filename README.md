@@ -1,4 +1,4 @@
-discryptord v0.2.5
+discryptord v0.2.7
 ===========
 
 A Discord bot that will amaze your friends by emitting a *24H* chart for any magic internet currency.
@@ -15,7 +15,6 @@ Examples:
 ```run
 # ETH/BTC ()
 !eth btc -w  # 7d/1w in 1h ticks
-
 !eth btc -m  # 30d/1m in 6h ticks
 
 # ETH/USD
