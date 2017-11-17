@@ -37,11 +37,15 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			if flag == "-w" {
 				candle = "hour"
+				splitCommand = splitCommand[:len(splitCommand)-1]
 			} else if flag == "-m" {
 				candle = "day"
+				splitCommand = splitCommand[:len(splitCommand)-1]
+			} else if flag == "-3m" {
+				candle = "3m"
+				splitCommand = splitCommand[:len(splitCommand)-1]
 			}
 
-			splitCommand = splitCommand[:len(splitCommand)-1]
 		}
 
 		// prevent overflow
@@ -70,6 +74,9 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			} else if candle == "day" {
 				apiURL = api.BuildHistoDayURL(coin, base)
 				timerange = "1M"
+			} else if candle == "3m" {
+				apiURL = api.BuildHistoHourAllURL(coin, base)
+				timerange = "3M"
 			}
 
 			resp, err := http.Get(apiURL)
