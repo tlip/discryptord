@@ -115,6 +115,7 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			// // //
 			var sym, changeSign string
 			var lastPrice, firstPrice float64
+			var color int
 
 			switch base {
 			case "usd":
@@ -151,27 +152,19 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			delta := lastPrice - firstPrice
 			pairing := fmt.Sprintf("%s/%s Price Chart (%s)", coin, base, timerange)
 			deltaPct := fmt.Sprintf("%.2f%%", delta/firstPrice*100)
-			msg := fmt.Sprintf("`%s%s%f (%s)`", changeSign, sym, math.Abs(delta), deltaPct)
-			color := 0x5dff9f
-
-			VolSum := 0.0
-			for i := range axes.VolFixed {
-				VolSum += axes.VolFixed[i]
-			}
 
 			if delta < 0 {
 				color = 0xE94335
+			} else {
+				color = 0x5dff9f
 			}
 
 			embed := NewEmbed().
 				SetAuthor(pairing, "https://cdn.discordapp.com/app-icons/359564584564293632/21fb4ad276ed1ddc3318ce0b1a663395.png").
-				AddField("Price", fmt.Sprintf("%s%f", sym, lastPrice)).
-				AddField("Price (min)", fmt.Sprintf("%s%f", sym, axes.Ymin)).
-				AddField("Price (max)", fmt.Sprintf("%s%f", sym, axes.Ymax)).
-				AddField(fmt.Sprintf("Vol (%s)", timerange), fmt.Sprintf("%s%f", sym, VolSum)).
-				AddField("Vol (min)", fmt.Sprintf("%s%f", sym, axes.Volmin)).
-				AddField("Vol (max)", fmt.Sprintf("%s%f", sym, axes.Volmax)).
-				AddField("∆", msg).
+				AddField("Last", fmt.Sprintf("%s%f", sym, lastPrice)).
+				AddField("Hi", fmt.Sprintf("%s%f", sym, axes.Ymax)).
+				AddField("Lo", fmt.Sprintf("%s%f", sym, axes.Ymin)).
+				AddField("∆", fmt.Sprintf("`%s%s%f (%s%s)`", changeSign, sym, math.Abs(delta), changeSign, deltaPct)).
 				InlineAllFields().
 				SetColor(color).
 				MessageEmbed
