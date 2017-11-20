@@ -12,13 +12,14 @@ func ParsePriceData(data []types.HistoTicker) types.AxesMap {
 	var wg, wg2 sync.WaitGroup
 
 	axes := types.AxesMap{
-		X:      make([]time.Time, len(data)),
-		Y:      make([]float64, len(data)),
-		Vol:    make([]float64, len(data)),
-		Ymin:   10000000000.0,
-		Ymax:   0.0,
-		Volmin: 10000000000.0,
-		Volmax: 0.0,
+		X:        make([]time.Time, len(data)),
+		Y:        make([]float64, len(data)),
+		Vol:      make([]float64, len(data)),
+		VolFixed: make([]float64, len(data)),
+		Ymin:     10000000000.0,
+		Ymax:     0.0,
+		Volmin:   10000000000.0,
+		Volmax:   0.0,
 	}
 
 	wg.Add(len(data))
@@ -29,6 +30,7 @@ func ParsePriceData(data []types.HistoTicker) types.AxesMap {
 			axes.X[i] = time.Unix(minute.Time, 0)
 			axes.Y[i] = minute.Close
 			axes.Vol[i] = minute.Volumeto
+			axes.VolFixed[i] = minute.Volumeto
 
 			if axes.Y[i] < axes.Ymin {
 				axes.Ymin = axes.Y[i]

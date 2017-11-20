@@ -112,15 +112,20 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			// format closing price
 			// // //
-			var sym string
-			var lastPrice float64
+			var sym, changeSign string
+			var lastPrice, firstPrice float64
 
 			switch base {
 			case "usd":
+			case "usdt":
+			case "USDT":
+			case "USD":
 				sym = "$"
 			case "btc":
+			case "BTC":
 				sym = "Ƀ"
 			case "eth":
+			case "ETH":
 				sym = "Ξ"
 			default:
 				sym = ""
@@ -128,18 +133,49 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			if len(axes.Y) > 0 {
 				lastPrice = axes.Y[len(axes.Y)-1]
+				firstPrice = axes.Y[0]
 			} else {
+				firstPrice = 0.0
 				lastPrice = 0.0
+			}
+
+			if lastPrice >= firstPrice {
+				changeSign = "+"
+			} else {
+				changeSign = ""
 			}
 
 			//	build message
 			//	//
-			pairing := fmt.Sprintf("%s/%s", coin, base)
-			msg := fmt.Sprintf("`%s :: %s%f                            %s`", pairing, sym, lastPrice, timerange)
+			delta := lastPrice - firstPrice
+			pairing := fmt.Sprintf("%s/%s Price Chart (%s)", coin, base, timerange)
+			msg := fmt.Sprintf("`%s%s%f`", sym, changeSign, delta)
+			color := 0x5dff9f
 
-			// send response
-			//	//
-			s.ChannelFileSendWithMessage(m.ChannelID, msg, coin+base+".png", bytes.NewReader(buffer.Bytes()))
+			VolSum := 0.0
+			for i := range axes.VolFixed {
+				VolSum += axes.VolFixed[i]
+			}
+
+			if delta < 0 {
+				color = 0xE94335
+			}
+
+			embed := NewEmbed().
+				SetAuthor(pairing, "https://cdn.discordapp.com/app-icons/359564584564293632/21fb4ad276ed1ddc3318ce0b1a663395.png").
+				AddField("Price", fmt.Sprintf("%s%f", sym, lastPrice)).
+				AddField("Price (min)", fmt.Sprintf("%s%f", sym, axes.Ymin)).
+				AddField("Price (max)", fmt.Sprintf("%s%f", sym, axes.Ymax)).
+				AddField(fmt.Sprintf("Vol (%s)", timerange), fmt.Sprintf("%s%f", sym, VolSum)).
+				AddField("Vol (min)", fmt.Sprintf("%s%f", sym, axes.Volmin)).
+				AddField("Vol (max)", fmt.Sprintf("%s%f", sym, axes.Volmax)).
+				AddField("∆", msg).
+				InlineAllFields().
+				SetColor(color).
+				MessageEmbed
+
+			s.ChannelMessageSendEmbed(m.ChannelID, embed)
+			s.ChannelFileSendWithMessage(m.ChannelID, "", coin+base+".png", bytes.NewReader(buffer.Bytes()))
 
 		}
 	}
