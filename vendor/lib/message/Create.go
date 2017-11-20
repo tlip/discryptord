@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"strings"
 
@@ -142,14 +143,14 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			if lastPrice >= firstPrice {
 				changeSign = "+"
 			} else {
-				changeSign = ""
+				changeSign = "-"
 			}
 
 			//	build message
 			//	//
 			delta := lastPrice - firstPrice
 			pairing := fmt.Sprintf("%s/%s Price Chart (%s)", coin, base, timerange)
-			msg := fmt.Sprintf("`%s%s%f`", sym, changeSign, delta)
+			msg := fmt.Sprintf("`%s%s%f`", changeSign, sym, math.Abs(delta))
 			color := 0x5dff9f
 
 			VolSum := 0.0
