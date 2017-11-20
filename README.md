@@ -1,4 +1,5 @@
-discryptord v0.2.5
+
+discryptord v0.2.9
 ===========
 
 A Discord bot that will amaze your friends by emitting a *24H* chart for any magic internet currency.
@@ -8,23 +9,25 @@ A Discord bot that will amaze your friends by emitting a *24H* chart for any mag
 ## Usage
 
 ```run
-!<TICKER> [?<BASE>] [?-(w|m)]
+!<TICKER> [?<BASE>] [?-(w|m|3m)]
 ```
 
 Examples:
 ```run
 # ETH/BTC ()
-!eth btc -w  # 7d/1w in 1h ticks
-
-!eth btc -m  # 30d/1m in 6h ticks
+!eth btc      # 24h/1d in 10m ticks 
+!eth btc -w   # 7d/1w in 1h ticks
+!eth btc -m   # 30d/1m in 6h ticks
+!eth btc -3m  # 90d/3m in 6h ticks
 
 # ETH/USD
-!eth         # 24h/1d in 10m ticks 
+!eth          # 24h/1d in 10m ticks 
 ```
 
 As you can see, if `<BASE>` is ommited, then it defaults to `"usd"`.
 The `-w` changes the output range from 24h/1d to 7d/1w. 
 The `-m` changes the output range from 24h/1d to 30d/1m. 
+The `-3m` changes the output range from 24h/1d to 90d/3m. 
 
 ## Install
 
@@ -74,4 +77,3 @@ ETH: `0x0f8c31fa23b21f23565db1e0938ebf41dd2ec5cd`
 ## License
 
 This project is under MIT License. See the [LICENSE](LICENSE) file for full license text.
-
