@@ -150,7 +150,8 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			//	//
 			delta := lastPrice - firstPrice
 			pairing := fmt.Sprintf("%s/%s Price Chart (%s)", coin, base, timerange)
-			msg := fmt.Sprintf("`%s%s%f`", changeSign, sym, math.Abs(delta))
+			deltaPct := fmt.Sprintf("%.2f%%", delta/firstPrice*100)
+			msg := fmt.Sprintf("`%s%s%f (%s)`", changeSign, sym, math.Abs(delta), deltaPct)
 			color := 0x5dff9f
 
 			VolSum := 0.0
