@@ -45,6 +45,9 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			} else if flag == "-3m" {
 				candle = "3m"
 				splitCommand = splitCommand[:len(splitCommand)-1]
+			} else if flag == "-6m" {
+				candle = "6m"
+				splitCommand = splitCommand[:len(splitCommand)-1]
 			}
 
 		}
@@ -78,6 +81,9 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			} else if candle == "3m" {
 				apiURL = api.BuildHistoHourAllURL(coin, base)
 				timerange = "3M"
+			} else if candle == "6m" {
+				apiURL = api.BuildHisto6mURL(coin, base)
+				timerange = "6M"
 			}
 
 			resp, err := http.Get(apiURL)
