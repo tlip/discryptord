@@ -11,7 +11,6 @@ import (
 
 // DrawChart :: Draws chart and writes to buffer
 func DrawChart(axes types.AxesMap) (*bytes.Buffer, error) {
-
 	priceSeries := chart.TimeSeries{
 		Name: "SPY",
 		Style: chart.Style{
