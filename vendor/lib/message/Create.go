@@ -36,7 +36,10 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if len(splitCommand) > 1 {
 			flag := splitCommand[len(splitCommand)-1]
 
-			if flag == "-w" {
+			if flag == "-3d" {
+				candle = "3d"
+				splitCommand = splitCommand[:len(splitCommand)-1]
+			} else if flag == "-w" {
 				candle = "hour"
 				splitCommand = splitCommand[:len(splitCommand)-1]
 			} else if flag == "-m" {
@@ -69,7 +72,10 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			// // //
 			var histoData types.HistoResponse
 			var apiURL, timerange string
-			if candle == "hour" {
+			if candle == "3d" {
+				apiURL = api.BuildThreeDayURL(coin, base)
+				timerange = "3D"
+			} else if candle == "hour" {
 				apiURL = api.BuildHistoHourURL(coin, base)
 				timerange = "7D"
 			} else if candle == "minute" {
