@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"strings"
 
-	"lib/api"
-	"lib/drawer"
-	"lib/types"
+	"github.com/flamingyawn/discryptord/lib/api"
+	"github.com/flamingyawn/discryptord/lib/drawer"
+	"github.com/flamingyawn/discryptord/lib/types"
 
 	"github.com/bwmarrin/discordgo"
 )

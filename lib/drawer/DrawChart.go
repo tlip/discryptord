@@ -3,7 +3,7 @@ package drawer
 import (
 	"bytes"
 
-	"lib/types"
+	"github.com/flamingyawn/discryptord/lib/types"
 
 	"github.com/wcharczuk/go-chart"
 	"github.com/wcharczuk/go-chart/drawing"

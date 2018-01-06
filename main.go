@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"lib/message"
+	"github.com/flamingyawn/discryptord/lib/message"
 
 	"github.com/bwmarrin/discordgo"
 )
