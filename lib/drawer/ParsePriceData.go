@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"lib/types"
+	"github.com/flamingyawn/discryptord/lib/types"
 )
 
 // ParsePriceData :: Parse Price Data
