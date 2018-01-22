@@ -27,35 +27,42 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	hasBeenInvoked := strings.HasPrefix(m.Content, "!") // check invocation
 	authorIsHuman := (m.Author.ID != s.State.User.ID)   // check humanity of invoker
-
 	if authorIsHuman && hasBeenInvoked {
 		// separate ticker from invocation
+		// and set default RSI presence
 		// // //
 		splitCommand := strings.Split(m.Content, " ")
+		rsiEnabled := false
 		candle := "minute"
+
 		if len(splitCommand) > 1 {
-			flag := splitCommand[len(splitCommand)-1]
+			for strings.HasPrefix(splitCommand[len(splitCommand)-1], "-") {
+				flag := splitCommand[len(splitCommand)-1]
 
-			if flag == "-3d" {
-				candle = "3d"
-				splitCommand = splitCommand[:len(splitCommand)-1]
-			} else if flag == "-w" {
-				candle = "hour"
-				splitCommand = splitCommand[:len(splitCommand)-1]
-			} else if flag == "-m" {
-				candle = "day"
-				splitCommand = splitCommand[:len(splitCommand)-1]
-			} else if flag == "-3m" {
-				candle = "3m"
-				splitCommand = splitCommand[:len(splitCommand)-1]
-			} else if flag == "-6m" {
-				candle = "6m"
-				splitCommand = splitCommand[:len(splitCommand)-1]
-			} else if flag == "-y" {
-				candle = "y"
-				splitCommand = splitCommand[:len(splitCommand)-1]
+				if flag == "-3d" {
+					candle = "3d"
+					splitCommand = splitCommand[:len(splitCommand)-1]
+				} else if flag == "-w" {
+					candle = "hour"
+					splitCommand = splitCommand[:len(splitCommand)-1]
+				} else if flag == "-m" {
+					candle = "day"
+					splitCommand = splitCommand[:len(splitCommand)-1]
+				} else if flag == "-3m" {
+					candle = "3m"
+					splitCommand = splitCommand[:len(splitCommand)-1]
+				} else if flag == "-6m" {
+					candle = "6m"
+					splitCommand = splitCommand[:len(splitCommand)-1]
+				} else if flag == "-y" {
+					candle = "y"
+					splitCommand = splitCommand[:len(splitCommand)-1]
+				} else if flag == "-rsi" || flag == "-RSI" {
+					rsiEnabled = true
+					splitCommand = splitCommand[:len(splitCommand)-1]
+				}
+
 			}
-
 		}
 
 		// prevent overflow
@@ -123,7 +130,7 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			// draw chart
 			// // //
-			buffer, err := drawer.DrawChart(axes)
+			buffer, err := drawer.DrawChart(axes, rsiEnabled)
 			if err != nil {
 				fmt.Println(err)
 				return
