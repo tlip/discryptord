@@ -1,4 +1,4 @@
-discryptord v0.4.1
+discryptord v0.4.2
 ===========
 
 A Discord bot that will amaze your friends by emitting a chart for any magic internet currency.
@@ -8,10 +8,14 @@ A Discord bot that will amaze your friends by emitting a chart for any magic int
 ## Usage
 
 ```run
-!<TICKER> [?<BASE>] [?-(3d|w|m|3m|6m|y)]
+!<TICKER> [?<BASE>] [?-(3d|w|m|3m|6m|y)] [?-(rsi)]
 ```
 
-Examples:
+### Options
+
+#### Time Range
+
+ Examples:
 ```run
 # ETH/BTC ()
 !eth btc      # 24h/1d in 10m ticks 
@@ -30,6 +34,20 @@ The `-m`  changes the output range from 24h/1d to 30d/1m.
 The `-3m` changes the output range from 24h/1d to 90d/3m. 
 The `-6m` changes the output range from 24h/1d to 180d/6m. 
 The `-y`  changes the output range from 24h/1d to 365d/1y. 
+
+
+#### Technical Analysis
+
+As of right now, we're testing customizable TA support.
+Only RSI is available right now, but I expect to bring many more indicators at some point in the future.
+These can be chained in tandem with `-3d`, `-w`, `-m`, etc.
+
+Examples:
+```run
+!eth -rsi
+!eth -w -rsi
+!eth -rsi -m
+```
 
 ## Install
 
