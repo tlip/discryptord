@@ -1,4 +1,4 @@
-discryptord v0.4.3
+discryptord v0.5.3
 ===========
 
 A Discord bot that will amaze your friends by emitting a chart for any magic internet currency.
@@ -8,7 +8,7 @@ A Discord bot that will amaze your friends by emitting a chart for any magic int
 ## Usage
 
 ```run
-!<TICKER> [?<BASE>] [?-(3d|w|m|3m|6m|y)] [?-(rsi)]
+!<TICKER> [?<BASE>] [?-(3d|w|m|3m|6m|y)] [?-(rsi)] [?-(log)]
 ```
 
 ### Options
@@ -48,6 +48,18 @@ Examples:
 !eth -w -rsi
 !eth -rsi -m
 ```
+
+#### Chart Scaling
+
+By default, the chart will be formatted using linear scaling.
+If you want to change it to logarithmic scaling (like us master pros), there's a flag available.
+
+```run
+!eth -log
+```
+
+The `-log` flag can be chaned with anything other flag flawlessly.
+
 
 ## Install
 
