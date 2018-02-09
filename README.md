@@ -49,6 +49,17 @@ Examples:
 !eth -rsi -m
 ```
 
+#### Chart Scaling
+
+By default, the chart will be formatted using linear scaling.
+If you want to change it to logarithmic scaling (like us master pros), there's a flag available.
+
+```run
+!eth -log
+```
+
+The `-log` flag can be chaned with anything other flag flawlessly.
+
 
 ## Install
 
