@@ -10,10 +10,11 @@ import (
 )
 
 // DrawChart :: Draws chart and writes to buffer
-func DrawChart(axes types.AxesMap, rsiEnabled bool) (*bytes.Buffer, error) {
+func DrawChart(axes types.AxesMap, rsiEnabled bool, logEnabled bool) (*bytes.Buffer, error) {
 
 	var rsiSeries, rsiTopLine, rsiBottomLine chart.TimeSeries
 	var rsi, rsi70Line, rsi30Line []float64
+	var chartColor, smaColor drawing.Color
 	VOL, Y := axes.Vol, axes.Y
 
 	if rsiEnabled == true {
@@ -39,11 +40,23 @@ func DrawChart(axes types.AxesMap, rsiEnabled bool) (*bytes.Buffer, error) {
 		}
 	}
 
+	if logEnabled {
+		smaColor = drawing.ColorFromHex("E6FF47").WithAlpha(87)
+	} else {
+		smaColor = drawing.ColorFromHex("AE73FF")
+	}
+
+	if Y[len(Y)-1] > Y[0] {
+		chartColor = drawing.ColorFromHex("5dff9f")
+	} else {
+		chartColor = drawing.ColorFromHex("EC515E")
+	}
+
 	priceSeries := chart.TimeSeries{
 		Name: "PRICE",
 		Style: chart.Style{
 			Show:        true,
-			StrokeColor: drawing.ColorFromHex("4DE786"),
+			StrokeColor: chartColor,
 		},
 		XValues: axes.X,
 		YValues: Y,
@@ -63,7 +76,7 @@ func DrawChart(axes types.AxesMap, rsiEnabled bool) (*bytes.Buffer, error) {
 		Name: "SMA",
 		Style: chart.Style{
 			Show:            true,
-			StrokeColor:     drawing.ColorFromHex("AE73FF"),
+			StrokeColor:     smaColor,
 			StrokeDashArray: []float64{5.0, 5.0},
 		},
 		InnerSeries: priceSeries,

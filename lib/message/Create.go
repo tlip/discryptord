@@ -126,7 +126,7 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			// // //
 			// draw chart
-			buffer, err := drawer.DrawChart(axes, rsiEnabled)
+			buffer, err := drawer.DrawChart(axes, rsiEnabled, logEnabled)
 			if err != nil {
 				fmt.Println(err)
 				return
