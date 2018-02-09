@@ -1,6 +1,7 @@
 package drawer
 
 import (
+	"math"
 	"sync"
 	"time"
 
@@ -8,7 +9,7 @@ import (
 )
 
 // ParsePriceData :: Parse Price Data
-func ParsePriceData(data []types.HistoTicker) types.AxesMap {
+func ParsePriceData(data []types.HistoTicker, logEnabled bool) types.AxesMap {
 	var wg, wg2 sync.WaitGroup
 
 	axes := types.AxesMap{
@@ -28,9 +29,24 @@ func ParsePriceData(data []types.HistoTicker) types.AxesMap {
 			defer wg.Done()
 
 			axes.X[i] = time.Unix(minute.Time, 0)
-			axes.Y[i] = minute.Close
-			axes.Vol[i] = minute.Volumeto
-			axes.VolFixed[i] = minute.Volumeto
+
+			if logEnabled {
+				if minute.Close != 0 {
+					axes.Y[i] = math.Log10(minute.Close)
+				} else {
+					axes.Y[i] = 0
+				}
+				if minute.Volumeto != 0 {
+					axes.Vol[i] = math.Log10(minute.Volumeto)
+				} else {
+					axes.Vol[i] = 0
+				}
+			} else {
+				axes.Y[i] = minute.Close
+				axes.Vol[i] = minute.Volumeto
+			}
+
+			axes.VolFixed[i] = axes.Vol[i]
 
 			if axes.Y[i] < axes.Ymin {
 				axes.Ymin = axes.Y[i]
@@ -46,6 +62,7 @@ func ParsePriceData(data []types.HistoTicker) types.AxesMap {
 
 		}(i, minute)
 	}
+
 	wg.Wait()
 
 	wg2.Add(len(axes.Vol))
