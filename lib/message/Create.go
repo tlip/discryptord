@@ -38,28 +38,22 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if len(splitCommand) > 1 {
 			for strings.HasPrefix(splitCommand[len(splitCommand)-1], "-") {
 				flag := splitCommand[len(splitCommand)-1]
+				splitCommand = splitCommand[:len(splitCommand)-1]
 
 				if flag == "-3d" {
 					candle = "3d"
-					splitCommand = splitCommand[:len(splitCommand)-1]
 				} else if flag == "-w" {
 					candle = "hour"
-					splitCommand = splitCommand[:len(splitCommand)-1]
 				} else if flag == "-m" {
 					candle = "day"
-					splitCommand = splitCommand[:len(splitCommand)-1]
 				} else if flag == "-3m" {
 					candle = "3m"
-					splitCommand = splitCommand[:len(splitCommand)-1]
 				} else if flag == "-6m" {
 					candle = "6m"
-					splitCommand = splitCommand[:len(splitCommand)-1]
 				} else if flag == "-y" {
 					candle = "y"
-					splitCommand = splitCommand[:len(splitCommand)-1]
 				} else if flag == "-rsi" || flag == "-RSI" {
 					rsiEnabled = true
-					splitCommand = splitCommand[:len(splitCommand)-1]
 				}
 
 			}
