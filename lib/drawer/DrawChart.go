@@ -142,5 +142,16 @@ func DrawChart(axes types.AxesMap, rsiEnabled bool) (*bytes.Buffer, error) {
 	// render and save chart
 	err := graph.Render(chart.PNG, buffer)
 
+	// shift change values back down if we shifted them for rsi
+	if rsiEnabled == true {
+		Yrange := (axes.Ymax*1.005 - axes.Ymin*0.995)
+		for i, n := range Y {
+			Y[i] = (n-(.2*Yrange)-(axes.Ymin*0.995))/0.8 + (axes.Ymin * 0.995)
+		}
+		for i, n := range VOL {
+			VOL[i] = (n-(.2*Yrange)-(axes.Ymin*0.995))/0.8 + (axes.Ymin * 0.995)
+		}
+	}
+
 	return buffer, err
 }
