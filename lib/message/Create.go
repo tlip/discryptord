@@ -115,7 +115,7 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 
 			err = json.Unmarshal(histoMinuteBody, &histoData)
-			if err != nil {
+			if err != nil || histoData.Response == "Error" {
 				fmt.Println(err)
 				return
 			}
