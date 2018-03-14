@@ -1,4 +1,4 @@
-discryptord v0.5.3
+discryptord v0.5.4
 ===========
 
 A Discord bot that will amaze your friends by emitting a chart for any magic internet currency.
