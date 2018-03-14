@@ -166,9 +166,9 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 				SetAuthor(pairing, "https://cdn.discordapp.com/app-icons/359564584564293632/21fb4ad276ed1ddc3318ce0b1a663395.png").
 				AddField("Last", fmt.Sprintf("%s%f", sym, lastPrice)).
 				AddField("First", fmt.Sprintf("%s%f", sym, firstPrice)).
+				AddField("∆", fmt.Sprintf("`%s%s%f (%s%s)`", changeSign, sym, math.Abs(delta), changeSign, deltaPct)).
 				AddField("Hi", fmt.Sprintf("%s%f", sym, hi)).
 				AddField("Lo", fmt.Sprintf("%s%f", sym, lo)).
-				AddField("∆", fmt.Sprintf("`%s%s%f (%s%s)`", changeSign, sym, math.Abs(delta), changeSign, deltaPct)).
 				InlineAllFields().
 				SetColor(color).
 				MessageEmbed
