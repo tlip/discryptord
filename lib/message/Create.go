@@ -33,28 +33,19 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// and set default RSI presence
 		splitCommand := strings.Split(m.Content, " ")
 		rsiEnabled, logEnabled := false, false
-		candle := "minute"
+		candle := "24h"
 
 		if len(splitCommand) > 1 {
 			for strings.HasPrefix(splitCommand[len(splitCommand)-1], "-") || splitCommand[len(splitCommand)-1] == "" {
 				flag := splitCommand[len(splitCommand)-1]
 				splitCommand = splitCommand[:len(splitCommand)-1]
 
-				if flag == "-3d" {
-					candle = "3d"
-				} else if flag == "-w" {
-					candle = "hour"
-				} else if flag == "-m" {
-					candle = "day"
-				} else if flag == "-3m" {
-					candle = "3m"
-				} else if flag == "-6m" {
-					candle = "6m"
-				} else if flag == "-y" {
-					candle = "y"
-				} else if flag == "-rsi" || flag == "-RSI" {
+				switch flag {
+				case "-3d", "-w", "-m", "-3m", "-6m", "-y":
+					candle = flag[1:len(flag)]
+				case "-rsi", "-RSI":
 					rsiEnabled = true
-				} else if flag == "-log" || flag == "-LOG" {
+				case "-log", "-LOG":
 					logEnabled = true
 				}
 
@@ -66,39 +57,21 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if len(splitCommand) <= 2 {
 			// // //
 			// get tickers
-			var base string
 			coin := strings.ToUpper(splitCommand[0][1:])
+
+			base := "USD"
 			if len(splitCommand) == 2 {
 				base = strings.ToUpper(splitCommand[1])
-			} else {
-				base = "USD"
 			}
 
 			// // //
 			// fetch data
 			var histoData types.HistoResponse
 			var apiURL, timerange string
-			if candle == "3d" {
-				apiURL = api.BuildThreeDayURL(coin, base)
-				timerange = "3D"
-			} else if candle == "hour" {
-				apiURL = api.BuildHistoHourURL(coin, base)
-				timerange = "7D"
-			} else if candle == "minute" {
-				apiURL = api.BuildHistoMinuteURL(coin, base)
-				timerange = "24H"
-			} else if candle == "day" {
-				apiURL = api.BuildHistoDayURL(coin, base)
-				timerange = "1M"
-			} else if candle == "3m" {
-				apiURL = api.BuildHistoHourAllURL(coin, base)
-				timerange = "3M"
-			} else if candle == "6m" {
-				apiURL = api.BuildHisto6mURL(coin, base)
-				timerange = "6M"
-			} else if candle == "y" {
-				apiURL = api.BuildYearURL(coin, base)
-				timerange = "1Y"
+			switch candle {
+			case "24h", "3d", "w", "m", "3m", "6m", "y":
+				apiURL = api.BuildHistoryApiUrl(candle, coin, base)
+				timerange = strings.ToUpper(candle)
 			}
 
 			resp, err := http.Get(apiURL)
@@ -142,16 +115,11 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			changeSign := "-"
 
 			switch base {
-			case "usd":
-			case "usdt":
-			case "USDT":
-			case "USD":
+			case "usd", "usdt", "USDT", "USD":
 				sym = "$"
-			case "btc":
-			case "BTC":
+			case "btc", "BTC":
 				sym = "Ƀ"
-			case "eth":
-			case "ETH":
+			case "eth", "ETH":
 				sym = "Ξ"
 			default:
 				sym = ""
@@ -197,6 +165,7 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			embed := NewEmbed().
 				SetAuthor(pairing, "https://cdn.discordapp.com/app-icons/359564584564293632/21fb4ad276ed1ddc3318ce0b1a663395.png").
 				AddField("Last", fmt.Sprintf("%s%f", sym, lastPrice)).
+				AddField("First", fmt.Sprintf("%s%f", sym, firstPrice)).
 				AddField("Hi", fmt.Sprintf("%s%f", sym, hi)).
 				AddField("Lo", fmt.Sprintf("%s%f", sym, lo)).
 				AddField("∆", fmt.Sprintf("`%s%s%f (%s%s)`", changeSign, sym, math.Abs(delta), changeSign, deltaPct)).
