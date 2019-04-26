@@ -34,6 +34,7 @@ The `-m`  changes the output range from 24h/1d to 30d/1m.
 The `-3m` changes the output range from 24h/1d to 90d/3m. 
 The `-6m` changes the output range from 24h/1d to 180d/6m. 
 The `-y`  changes the output range from 24h/1d to 365d/1y. 
+The `-5y`  changes the output range from 24h/1d to 1,825d/5y. 
 
 
 #### Technical Analysis
