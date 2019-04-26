@@ -41,7 +41,7 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 				splitCommand = splitCommand[:len(splitCommand)-1]
 
 				switch flag {
-				case "-3d", "-w", "-m", "-3m", "-6m", "-y":
+				case "-3d", "-w", "-m", "-3m", "-6m", "-y", "-5y":
 					candle = flag[1:len(flag)]
 				case "-rsi", "-RSI":
 					rsiEnabled = true
@@ -69,7 +69,7 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 			var histoData types.HistoResponse
 			var apiURL, timerange string
 			switch candle {
-			case "24h", "3d", "w", "m", "3m", "6m", "y":
+			case "24h", "3d", "w", "m", "3m", "6m", "y", "5y":
 				apiURL = api.BuildHistoryApiUrl(candle, coin, base)
 				timerange = strings.ToUpper(candle)
 			}
@@ -125,27 +125,24 @@ func Create(s *discordgo.Session, m *discordgo.MessageCreate) {
 				sym = ""
 			}
 
-			if len(axes.Y) > 0 {
-				lastPrice = axes.Y[len(axes.Y)-1]
-				firstPrice = axes.Y[0]
-			}
-
 			if logEnabled && len(axes.Y) > 0 {
+				normalAxes := drawer.ParsePriceData(histoData.Data, false)
+
 				logText = "Logarithmic "
 
-				if lastPrice > 0 {
-					lastPrice = math.Pow(10, lastPrice)
-				}
-				if firstPrice > 0 {
-					firstPrice = math.Pow(10, firstPrice)
-				}
-				if hi > 0 {
-					hi = math.Pow(10, hi)
-				}
-				if lo > 0 {
-					lo = math.Pow(10, lo)
-				}
+				lastPrice = normalAxes.Y[len(normalAxes.Y)-1]
+				firstPrice = normalAxes.Y[0]
+				hi = normalAxes.Ymax
+				lo = normalAxes.Ymin
 
+				fmt.Printf("Last %s%f", sym, lastPrice)
+				fmt.Printf("First %s%f", sym, firstPrice)
+				fmt.Printf("Hi %s%f", sym, hi)
+				fmt.Printf("Lo %s%f", sym, lo)
+
+			} else if len(axes.Y) > 0 {
+				lastPrice = axes.Y[len(axes.Y)-1]
+				firstPrice = axes.Y[0]
 			}
 
 			if lastPrice >= firstPrice {
