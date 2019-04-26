@@ -21,6 +21,8 @@ func BuildHistoryApiUrl(daterange, coin, base string) string {
 		path, limit, aggregate = "/data/histoday", "&limit=183", "&aggregate=1"
 	case "y":
 		path, limit, aggregate = "/data/histoday", "&limit=365", "&aggregate=1"
+	case "5y":
+		path, limit, aggregate = "/data/histoday", "&limit=1825", "&aggregate=1"
 	case "24h":
 		fallthrough
 	default:
