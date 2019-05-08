@@ -109,4 +109,4 @@ ETH: `0x0f8c31fa23b21f23565db1e0938ebf41dd2ec5cd`
 
 ## License
 
-This project is under MIT License. See the [LICENSE](LICENSE) file for full license text.
+This project is under MIT License. See the [LICENSE](LICENSE.md) file for full license text.
